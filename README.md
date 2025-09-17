@@ -63,3 +63,10 @@ This project was done as part of the [Codebasics](https://codebasics.io/) course
    ```commandline
    streamlit run frontend/app.py
    ```
+
+   <img width="883" height="726" alt="Screenshot 2025-09-16 232356" src="https://github.com/user-attachments/assets/4c534265-30ed-4e4b-b8c6-50c1e1b18b2f" />
+
+   <img width="751" height="905" alt="Screenshot 2025-09-16 232416" src="https://github.com/user-attachments/assets/b8c417a0-776c-4a64-80f4-4e5db517290c" />
+
+   <img width="832" height="741" alt="Screenshot 2025-09-16 232440" src="https://github.com/user-attachments/assets/2a46babf-e0ac-41fc-a6b8-71d103b493d0" />
+
