@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from datetime import date
 from backend import db_helper
 from typing import List
@@ -6,6 +7,14 @@ from pydantic import BaseModel
 from fastapi import HTTPException
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allows all frontends to access; for production, replace "*" with your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Expense(BaseModel):
     amount: float
@@ -57,5 +66,6 @@ def get_monthly_analytics():
     if data is None:
         raise HTTPException(status_code=500, detail="Failed to retrieve expenses from the database")
     return data
+
 
 
