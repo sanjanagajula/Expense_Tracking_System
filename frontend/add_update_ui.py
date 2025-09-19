@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 import requests
 
-API_URL = "https://expense-tracking-system-3.onrender.com"
+API_URL = "https://expense-tracking-system-4.onrender.com"
 
 def add_update_tab():
     selected_date = st.date_input("Enter Date", datetime(2024, 8, 1), label_visibility="collapsed")
@@ -62,4 +62,5 @@ def add_update_tab():
             if response.status_code == 200:
                 st.success("Expense updated successfully")
             else:
+
                 st.error("Failed to update expense")
