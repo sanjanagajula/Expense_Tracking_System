@@ -18,7 +18,7 @@ def get_db_cursor(commit=False):
             user="expenses_gvt2_user",
             password="LREPTobNgK56Rgagub1nluYXGACysOtI",
             database="expenses_gvt2",
-            port=5432
+            port=3306
         )
         cursor = conn.cursor(dictionary=True)
         yield cursor
@@ -96,6 +96,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
