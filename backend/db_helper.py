@@ -3,6 +3,9 @@ from contextlib import contextmanager
 from backend.logging_setup import setup_logger
 import os
 
+logger = setup_logger("db_helper")
+
+
 
 @contextmanager
 def get_db_cursor(commit=False):
@@ -84,6 +87,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
