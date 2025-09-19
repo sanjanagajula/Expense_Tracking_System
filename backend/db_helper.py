@@ -14,12 +14,13 @@ def get_db_cursor(commit=False):
     try:
         # Connect using hardcoded values
         conn = mysql.connector.connect(
-            host="dpg-d36jdljipnbc7398fn1g-a",
-            user="expenses_gvt2_user",
-            password="LREPTobNgK56Rgagub1nluYXGACysOtI",
-            database="expenses_gvt2",
-            port=3306
-        )
+    host=os.environ["dpg-d36jdljipnbc7398fn1g-a"],   # e.g., dpg-d36jdljipnbc7398fn1g-a
+    user=os.environ["expenses_gvt2_user"],
+    password=os.environ["LREPTobNgK56Rgagub1nluYXGACysOtI"],
+    database=os.environ["expenses_gvt2"],
+    port=int(os.environ["3306"])  # 3306
+)
+
         cursor = conn.cursor(dictionary=True)
         yield cursor
         if commit:
@@ -96,6 +97,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
