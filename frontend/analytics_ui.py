@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 import pandas as pd
 
-API_URL = "https://expense-tracking-system-3.onrender.com"
+API_URL = "https://expense-tracking-system-4.onrender.com"
 
 
 def analytics_tab():
@@ -39,5 +39,6 @@ def analytics_tab():
         df_sorted["Percentage"] = df_sorted["Percentage"].map("{:,.2f}".format)
 
         st.table(df_sorted)
+
 
 
