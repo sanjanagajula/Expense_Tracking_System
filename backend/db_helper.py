@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 from backend.logging_setup import setup_logger
 import os
@@ -9,26 +10,27 @@ logger = setup_logger("db_helper")
 @contextmanager
 def get_db_cursor(commit=False):
     """
-    Context manager to get a MySQL cursor. Automatically commits if commit=True.
+    Context manager to get a PostgreSQL cursor. Automatically commits if commit=True.
     """
     try:
-        # Connect using hardcoded values
-        
         conn = psycopg2.connect(
-            host=os.environ["DB_HOST"],      # references the environment variable DB_HOST
+            host=os.environ["DB_HOST"],      
             user=os.environ["DB_USER"],
             password=os.environ["DB_PASS"],
-            database=os.environ["DB_NAME"],
+            dbname=os.environ["DB_NAME"],   # in psycopg2 use dbname instead of database
             port=int(os.environ["DB_PORT"])
         )
 
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(cursor_factory=RealDictCursor)  # ✅ returns rows as dictionaries
         yield cursor
+
         if commit:
             conn.commit()
-    except mysql.connector.Error as e:
+
+    except psycopg2.Error as e:   # ✅ PostgreSQL error handling
         logger.error(f"Database connection/query error: {e}")
         raise
+
     finally:
         if 'cursor' in locals():
             cursor.close()
@@ -36,14 +38,15 @@ def get_db_cursor(commit=False):
             conn.close()
 
 
-
+# ------------------------
+# Your Queries
+# ------------------------
 
 def fetch_expenses_for_date(expense_date):
     logger.info(f"fetch_expenses_for_date called with: {expense_date}")
     with get_db_cursor() as cursor:
         cursor.execute("SELECT * FROM expenses WHERE expense_date = %s", (expense_date,))
-        expenses = cursor.fetchall()
-        return expenses
+        return cursor.fetchall()
 
 
 def delete_expenses_for_date(expense_date):
@@ -60,53 +63,43 @@ def insert_expense(expense_date, amount, category, notes):
             (expense_date, amount, category, notes)
         )
 
+
 def fetch_expense_summary(start_date, end_date):
     logger.info(f"fetch_expense_summary called with start: {start_date}, end: {end_date}")
     with get_db_cursor() as cursor:
         cursor.execute(
-    '''SELECT category, SUM(amount) as total 
-                FROM expenses WHERE expense_date 
-                BETWEEN %s and %s
-                GROUP BY category''',
+            """
+            SELECT category, SUM(amount) as total 
+            FROM expenses 
+            WHERE expense_date BETWEEN %s AND %s
+            GROUP BY category
+            """,
             (start_date, end_date)
         )
-        data = cursor.fetchall()
-        return data
+        return cursor.fetchall()
 
-    ###
+
 def fetch_all_monthly_expenses():
     with get_db_cursor() as cursor:
         cursor.execute(
             """
             SELECT 
-                DATE_FORMAT(expense_date, '%M %Y') AS month, 
+                TO_CHAR(expense_date, 'Month YYYY') AS month,  -- ✅ PostgreSQL syntax
                 SUM(amount) AS total
             FROM expenses
-            GROUP BY DATE_FORMAT(expense_date, '%M %Y')
+            GROUP BY TO_CHAR(expense_date, 'Month YYYY')
             ORDER BY MIN(expense_date);
             """
         )
         return cursor.fetchall()
 
-##
 
-
+# ------------------------
+# Test Run
+# ------------------------
 if __name__ == '__main__':
-
     expenses = fetch_expenses_for_date("2024-08-01")
     print(expenses)
-    summary= fetch_expense_summary("2024-08-01", "2024-08-05")
+    summary = fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
-
-
-
-
-
-
-
-
-
-
-
-
