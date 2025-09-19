@@ -23,6 +23,7 @@ def get_db_cursor(commit=False):
         conn.close()
 
 
+
 def fetch_expenses_for_date(expense_date):
     logger.info(f"fetch_expenses_for_date called with: {expense_date}")
     with get_db_cursor() as cursor:
@@ -83,6 +84,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
