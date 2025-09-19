@@ -1,24 +1,26 @@
 import mysql.connector
 from contextlib import contextmanager
 from backend.logging_setup import setup_logger
+import os
 
-logger = setup_logger('db_helper')
 
 @contextmanager
 def get_db_cursor(commit=False):
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="expense_manager"
+    conn = mysql.connector.connect(
+        host=os.environ["dpg-d36jdljipnbc7398fn1g-a"],
+        user=os.environ["expenses_gvt2_user"],
+        password=os.environ["LREPTobNgK56Rgagub1nluYXGACysOtI"],
+        database=os.environ["expenses_gvt2"],
+        port=int(os.environ["5432"])
     )
-
-    cursor = connection.cursor(dictionary=True)
-    yield cursor
-    if commit:
-        connection.commit()
-    cursor.close()
-    connection.close()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        yield cursor
+        if commit:
+            conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def fetch_expenses_for_date(expense_date):
@@ -81,5 +83,6 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
