@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
-API_URL = "https://expense-tracking-system-3.onrender.com"
+API_URL = "https://expense-tracking-system-4.onrender.com"
 
 def analytics_by_months_tab():
     response = requests.get(f"{API_URL}/analytics/monthly")
@@ -22,4 +22,5 @@ def analytics_by_months_tab():
         st.table(df)
     else:
         st.error("Failed to fetch data")
+
 
