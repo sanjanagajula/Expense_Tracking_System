@@ -3,27 +3,36 @@ from contextlib import contextmanager
 from backend.logging_setup import setup_logger
 import os
 
+# Initialize logger
 logger = setup_logger("db_helper")
-
-
 
 @contextmanager
 def get_db_cursor(commit=False):
-    conn = mysql.connector.connect(
-        host=os.environ["dpg-d36jdljipnbc7398fn1g-a"],
-        user=os.environ["expenses_gvt2_user"],
-        password=os.environ["LREPTobNgK56Rgagub1nluYXGACysOtI"],
-        database=os.environ["expenses_gvt2"],
-        port=int(os.environ["3306"])
-    )
+    """
+    Context manager to get a MySQL cursor. Automatically commits if commit=True.
+    """
     try:
+        # Connect using hardcoded values
+        conn = mysql.connector.connect(
+            host="dpg-d36jdljipnbc7398fn1g-a",
+            user="expenses_gvt2_user",
+            password="LREPTobNgK56Rgagub1nluYXGACysOtI",
+            database="expenses_gvt2",
+            port=3306
+        )
         cursor = conn.cursor(dictionary=True)
         yield cursor
         if commit:
             conn.commit()
+    except mysql.connector.Error as e:
+        logger.error(f"Database connection/query error: {e}")
+        raise
     finally:
-        cursor.close()
-        conn.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals():
+            conn.close()
+
 
 
 
@@ -87,6 +96,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
