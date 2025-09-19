@@ -11,7 +11,7 @@ def get_db_cursor(commit=False):
         user=os.environ["expenses_gvt2_user"],
         password=os.environ["LREPTobNgK56Rgagub1nluYXGACysOtI"],
         database=os.environ["expenses_gvt2"],
-        port=int(os.environ["5432"])
+        port=int(os.environ["3306"])
     )
     try:
         cursor = conn.cursor(dictionary=True)
@@ -84,6 +84,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
