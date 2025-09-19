@@ -1,4 +1,4 @@
-import mysql.connector
+import psycopg2
 from contextlib import contextmanager
 from backend.logging_setup import setup_logger
 import os
@@ -14,7 +14,7 @@ def get_db_cursor(commit=False):
     try:
         # Connect using hardcoded values
         
-        conn = mysql.connector.connect(
+        conn = psycopg2.connect(
             host=os.environ["DB_HOST"],      # references the environment variable DB_HOST
             user=os.environ["DB_USER"],
             password=os.environ["DB_PASS"],
@@ -98,6 +98,7 @@ if __name__ == '__main__':
     summary= fetch_expense_summary("2024-08-01", "2024-08-05")
     for record in summary:
         print(record)
+
 
 
 
